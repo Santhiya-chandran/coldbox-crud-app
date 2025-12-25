@@ -1,0 +1,12 @@
+{
+    "name":"coldbox_app",
+    "app":{
+        "cfengine":"lucee@6"
+    },
+    "web":{
+        "webroot":"public",
+        "rewrites":{
+            "enable":true
+        }
+    }
+}
