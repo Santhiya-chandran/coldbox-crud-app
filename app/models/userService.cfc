@@ -60,14 +60,49 @@ component accessors="true"{
 		var q = queryExecute(
 			"SELECT * FROM users WHERE username = :u",
 			{ u : arguments.username },
-			{ datasource : "main" }
+			{ datasource : "coldbox_app" }
 		);
 
 		if ( q.recordCount == 0 ) return {};
 
-		if ( hash( arguments.password ) != q.password_hash ) return {};
+		var storedHash = q.password_hash[1];
+		if ( hash( arguments.password ) != storedHash ) return {};
 
-		return q[1];
+		var userRow = {};
+		var cols = listToArray(q.columnList);
+		for ( var i = 1; i LTE arrayLen(cols); i = i + 1 ){
+			var col = cols[i];
+			userRow[col] = q[col][1];
+		}
+
+		return userRow;
+	}
+
+	function create(
+		required string username,
+		required string password
+	) {
+
+		// check duplicate username
+		var exists = queryExecute(
+			"SELECT COUNT(*) AS cnt FROM users WHERE username = :u",
+			{ u = arguments.username },
+			{ datasource = "coldbox_app" }
+		);
+		if ( exists.cnt[1] GTE 1 ){
+			return { success=false, message="Username already exists" };
+		}
+
+		queryExecute(
+			"INSERT INTO users (username, password_hash) VALUES (:u, :p)",
+			{
+				u = arguments.username,
+				p = hash( arguments.password )
+			},
+			{ datasource = "coldbox_app" }
+		);
+
+		return { success=true };
 	}
 
 

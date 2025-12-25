@@ -61,6 +61,9 @@ component {
 		 */
 		variables.settings = {};
 
+		// Application datasource (keep datasource config centralized in ColdBox.cfc)
+		variables.settings.datasource = "coldbox_app";
+
 		/**
 		 * --------------------------------------------------------------------------
 		 * Environment Detection

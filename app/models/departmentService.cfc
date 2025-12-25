@@ -53,21 +53,21 @@ component accessors="true"{
 	}
 
 	public query function getAll() {
-		query = queryExecute("SELECT * FROM departments", [], { datasource: "departments" });
+		query = queryExecute("SELECT * FROM departments", [], { datasource: "coldbox_app" });
 		return query;
 	}
 
 	public any function create( string name, string abbr ) {
 		queryExecute("INSERT INTO departments (department_name, department_abbreviation) VALUES (:name, :abbr)", 
 			{ name = name, abbr = abbr }, 
-			{ datasource: "departments" });
+			{ datasource: "coldbox_app" });
 		return;
 	}
 
 	public query function getById( numeric id ) {
 		query = queryExecute("SELECT * FROM departments WHERE department_id = :id", 
 			{ id = { value = arguments.id, cfsqltype = "cf_sql_integer" } }, 
-			{ datasource: "departments" });
+			{ datasource: "coldbox_app" });
 		if ( query.recordCount > 0 ) {
 			return query;
 		} else {
@@ -78,14 +78,14 @@ component accessors="true"{
 	public any function update( numeric id, string name, string abbr ) {
 		queryExecute("UPDATE departments SET department_name = :name, department_abbreviation = :abbr WHERE department_id = :id", 
 			{ name = name, abbr = abbr, id = { value = arguments.id, cfsqltype = "cf_sql_integer" } }, 
-			{ datasource: "departments" });
+			{ datasource: "coldbox_app" });
 		return;
 	}
 
 	public any function delete( numeric id ) {
 		queryExecute("DELETE FROM departments WHERE department_id = :id", 
 			{ id = { value = arguments.id, cfsqltype = "cf_sql_integer" } }, 
-			{ datasource: "departments" });
+			{ datasource: "coldbox_app" });
 		return;
 	}
 

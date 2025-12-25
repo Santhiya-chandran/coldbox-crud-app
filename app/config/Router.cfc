@@ -20,7 +20,17 @@ component {
 		} );
 
 		// @app_routes@
-		
+		route( "/login", "Auth.login" );
+		route( "/authenticate", "Auth.authenticate", "post" );
+		route( "/auth/createAccount", "Auth.createAccount" );
+		route( "/logout", "Auth.logout" );
+		route( "/departments/new", "Departments.new");
+		route( "/departments/create", "Departments.create", "post" );
+		route( "/departments/edit/:id", "Departments.edit" );
+		route( "/departments/update", "Departments.update", "post" );
+		route( "/departments/delete/:id", "Departments.delete" );
+		route( "/departments", "Departments.index" );
+
 
 		// Conventions-Based Routing
 		route( ":handler/:action?" ).end();

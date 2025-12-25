@@ -13,7 +13,8 @@ component {
 	 */
 	this.name              = "ColdBox Application";
 	this.sessionManagement = true;
-	this.sessionTimeout    = createTimespan( 0, 0, 30, 0 );
+	// Session timeout set to 10 minutes (application-level)
+	this.sessionTimeout    = createTimespan( 0, 0, 10, 0 );
 	this.setClientCookies  = true;
 	this.setDomainCookies     = true;
 	this.timezone             = "UTC";
@@ -72,8 +73,8 @@ component {
 	 * --------------------------------------------------------------------------
 	 * ORM + Datasource Settings
 	 * --------------------------------------------------------------------------
+	 * Datasource configuration is set in ColdBox.cfc per project rules.
 	 */
-	this.datasource = "coldbox"
 
 	/**
 	 * Fires when the application starts

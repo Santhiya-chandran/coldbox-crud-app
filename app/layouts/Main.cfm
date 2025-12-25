@@ -51,102 +51,23 @@
 					</button>
 
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-						<!---About --->
-						<ul class="navbar-nav ms-5 mb-2 mb-lg-0">
-							<li class="nav-item dropdown">
-								<a
-									class="nav-link dropdown-toggle"
-									href="##"
-									id="navbarDropdown"
-									role="button"
-									data-bs-toggle="dropdown"
-									aria-expanded="false"
-								>
-									About  <b class="caret"></b>
-								</a>
-								<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-									<li>
-										<a href="https://coldbox.org" class="dropdown-item">
-											<i class="bi bi-journal-text"></i> Official Site
-										</a>
-									</li>
-									<li>
-										<a href="https://ortussolutions.atlassian.net/browse/COLDBOX" class="dropdown-item">
-											<i class="bi bi-bug"></i> Report a Bug
-										</a>
-									</li>
-									<li>
-										<a href="https://github.com/ColdBox/coldbox-platform/stargazers" class="dropdown-item">
-											<i class="bi bi-star"></i> Star Us
-										</a>
-									</li>
-									<li>
-										<hr class="dropdown-divider">
-									</li>
-									<li class="p-2">
-										<img class="rounded mx-auto block" width="150" src="includes/images/ColdBoxLogo2015_300.png" alt="logo"/>
-									</li>
-								</ul>
-							</li>
-						</ul>
-
-						<!--- Community --->
 						<ul class="navbar-nav mb-2 mb-lg-0">
 							<li class="nav-item dropdown">
-								<a
-									class="nav-link dropdown-toggle"
-									href="##"
-									id="navbarDropdown"
-									role="button"
-									data-bs-toggle="dropdown"
-									aria-expanded="false"
-								>
-									Learn  <b class="caret"></b>
-								</a>
-								<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-									<li>
-										<a class="dropdown-item" href="https://coldbox.ortusbooks.com">Documentation</a>
-									</li>
-									<li>
-										<a class="dropdown-item" href="https://www.ortussolutions.com/blog">Blog</a>
-									</li>
-									<li>
-										<a class="dropdown-item" href="https://www.cfcasts.com/" target="_blank">Videos</a>
-									</li>
-									<li>
-										<a class="dropdown-item" href="https://www.ortussolutions.com/services/training" target="_blank">Courses</a>
-									</li>
-								</ul>
-							</li>
-						</ul>
 
-						<!--- Support --->
-						<ul class="navbar-nav mb-2 mb-lg-0">
-							<li class="nav-item dropdown">
-								<a
-									class="nav-link dropdown-toggle"
-									href="##"
-									id="navbarDropdown"
-									role="button"
-									data-bs-toggle="dropdown"
-									aria-expanded="false"
-								>
-									Support  <b class="caret"></b>
-								</a>
-								<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-									<li>
-										<a class="dropdown-item" href="https://boxteam.ortussolutions.com">Slack</a>
-									</li>
-									<li>
-										<a class="dropdown-item" href="https://community.ortussolutions.com/c/communities/coldbox/13">Mailing List</a>
-									</li>
-									<li>
-										<a class="dropdown-item" href="https://www.coldbox.org/support/overview">Community Support</a>
-									</li>
-									<li>
-										<a class="dropdown-item" href="https://www.ortussolutions.com/services">Professional Support</a>
-									</li>
+								<!--- Right side (auth) --->
+								<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+									<cfif structKeyExists( session, "user" )>
+										<li class="nav-item">
+											<a class="nav-link" href="##">#htmlEditFormat(session.user.fullName)#</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" href="#event.buildLink('auth.logout')#">Logout</a>
+										</li>
+									<cfelse>
+										<li class="nav-item">
+											<a class="nav-link" href="#event.buildLink('auth.login')#">Login</a>
+										</li>
+									</cfif>
 								</ul>
 							</li>
 						</ul>
@@ -157,6 +78,9 @@
 
 		<!---Container And Views --->
 		<main class="flex-shrink-0">
+			<cfif structKeyExists( flash, "message" )>
+				<div class="container mt-3"><div class="alert alert-#flash.message.type#">#flash.message.text#</div></div>
+			</cfif>
 			#view()#
 		</main>
 
@@ -178,6 +102,8 @@
 		<!---js --->
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 		<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+		<!--- App validation stubs --->
+		<script src="/includes/js/validation.js"></script>
 	</body>
 	</html>
 	</cfoutput>
