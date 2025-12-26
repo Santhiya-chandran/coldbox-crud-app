@@ -19,25 +19,75 @@ component extends="coldbox.system.EventHandler"{
 	}
 
 	function create( event ) {
-		deptService.create(
-			event.getValue( "name" ),
-			event.getValue( "abbr" )
-		);
-		relocate( "departments" );
+		try {
+			deptService.create(
+				event.getValue( "name" ),
+				event.getValue( "abbr" )
+			);
+			relocate( "departments" );
+		} catch ( any e ) {
+			if ( structKeyExists( e, 'type' ) AND e.type == 'validation' ) {
+				var flash = controller.getRequestService().getFlashScope();
+				var errs = {};
+				if ( structKeyExists( e, 'field' ) ) {
+					errs[ e.field ] = e.message;
+				} else {
+					errs.name = e.message;
+				}
+				flash.putAll( { errors = errs, name = event.getValue("name"), abbr = event.getValue("abbr") }, true );
+				relocate( event="departments.new" );
+			} else {
+				throw e;
+			}
+		}
 	}
 
 	function edit( event, rc, prc ) {
-		prc.dept = deptService.getById( event.getValue("id") )
+		var q = deptService.getById( event.getValue("id") );
+		var deptStruct = {};
+		if ( isQuery( q ) AND q.recordCount ) {
+			deptStruct = {
+				department_id = q.department_id[1],
+				department_name = q.department_name[1],
+				department_abbreviation = q.department_abbreviation[1]
+			};
+		}
+
+		// If any values were persisted into the flash (inflated to RC), prefer them so the form
+		// shows the user's last input after a validation failure.
+		if ( structKeyExists( rc, 'id' ) ) deptStruct.department_id = rc.id;
+		if ( structKeyExists( rc, 'name' ) ) deptStruct.department_name = rc.name;
+		if ( structKeyExists( rc, 'abbr' ) ) deptStruct.department_abbreviation = rc.abbr;
+		if ( structKeyExists( rc, 'errors' ) ) prc.errors = rc.errors;
+
+		prc.dept = deptStruct;
 		event.setView("departments/edit");
 	}
 
 	function update( event ) {
-		deptService.update(
-			event.getValue("id"),
-			event.getValue("name"),
-			event.getValue("abbr")
-		);
-		relocate( "departments" );
+		try {
+			deptService.update(
+				event.getValue("id"),
+				event.getValue("name"),
+				event.getValue("abbr")
+			);
+			relocate( "departments" );
+		} catch( any e ) {
+			// Handle validation error thrown by the service (e.g., duplicate abbreviation)
+			if ( structKeyExists( e, 'type' ) AND e.type == 'validation' ) {
+				var flash = controller.getRequestService().getFlashScope();
+				var errs = {};
+				if ( structKeyExists( e, 'field' ) ) {
+					errs[ e.field ] = e.message;
+				} else {
+					errs.abbr = e.message;
+				}
+				flash.putAll( { errors = errs, id = event.getValue("id"), name = event.getValue("name"), abbr = event.getValue("abbr") }, true );
+				relocate( event="departments.edit", queryString={ id = event.getValue("id") } );
+			} else {
+				throw e;
+			}
+		}
 	}
 
 	function delete( event ) {

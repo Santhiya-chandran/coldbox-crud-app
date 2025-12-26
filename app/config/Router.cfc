@@ -21,6 +21,8 @@ component {
 
 		// @app_routes@
 		route( "/login", "Auth.login" );
+		// Route root to login so server starts at the login page
+		route( "/", "Auth.login" );
 		route( "/authenticate", "Auth.authenticate", "post" );
 		route( "/auth/createAccount", "Auth.createAccount" );
 		route( "/logout", "Auth.logout" );

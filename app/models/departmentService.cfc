@@ -58,6 +58,25 @@ component accessors="true"{
 	}
 
 	public any function create( string name, string abbr ) {
+		// Ensure uniqueness for name and abbreviation
+		var existingName = queryExecute(
+			"SELECT department_id FROM departments WHERE department_name = :name",
+			{ name = name },
+			{ datasource = "coldbox_app" }
+		);
+		if ( existingName.recordCount > 0 ) {
+			throw( type="validation", message="Department name already in use", field="name" );
+		}
+
+		var existingAbbr = queryExecute(
+			"SELECT department_id FROM departments WHERE department_abbreviation = :abbr",
+			{ abbr = abbr },
+			{ datasource = "coldbox_app" }
+		);
+		if ( existingAbbr.recordCount > 0 ) {
+			throw( type="validation", message="Department abbreviation already in use", field="abbr" );
+		}
+
 		queryExecute("INSERT INTO departments (department_name, department_abbreviation) VALUES (:name, :abbr)", 
 			{ name = name, abbr = abbr }, 
 			{ datasource: "coldbox_app" });
@@ -76,6 +95,26 @@ component accessors="true"{
 	}
 
 	public any function update( numeric id, string name, string abbr ) {
+		// Check for uniqueness of abbreviation (excluding current record)
+		var existingAbbr = queryExecute(
+			"SELECT department_id FROM departments WHERE department_abbreviation = :abbr",
+			{ abbr = abbr },
+			{ datasource = "coldbox_app" }
+		);
+		if ( existingAbbr.recordCount > 0 && existingAbbr.department_id[1] != arguments.id ) {
+			throw( type="validation", message="Department abbreviation already in use", field="abbr" );
+		}
+
+		// Check for uniqueness of name (excluding current record)
+		var existingName = queryExecute(
+			"SELECT department_id FROM departments WHERE department_name = :name",
+			{ name = name },
+			{ datasource = "coldbox_app" }
+		);
+		if ( existingName.recordCount > 0 && existingName.department_id[1] != arguments.id ) {
+			throw( type="validation", message="Department name already in use", field="name" );
+		}
+
 		queryExecute("UPDATE departments SET department_name = :name, department_abbreviation = :abbr WHERE department_id = :id", 
 			{ name = name, abbr = abbr, id = { value = arguments.id, cfsqltype = "cf_sql_integer" } }, 
 			{ datasource: "coldbox_app" });
